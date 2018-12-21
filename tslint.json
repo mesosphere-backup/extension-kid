@@ -1,0 +1,3 @@
+{
+  "extends": ["@dcos/tslint-config"]
+}
