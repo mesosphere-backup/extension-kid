@@ -5,6 +5,7 @@ import { Observer } from "rxjs/Observer";
 import { EventEmitter } from "events";
 
 import ServiceIdentifier = interfaces.ServiceIdentifier;
+import BindingToSyntax = interfaces.BindingToSyntax;
 
 const BOUND = "BOUND";
 const UNBOUND = "UNBOUND";
@@ -67,14 +68,30 @@ export default class Container extends InversifyContainer {
     this.eventEmitter.removeListener(type, callback);
   }
 
-  public bind<T>(serviceIdentifier: ServiceIdentifier<T>) {
+  public bind<T>(serviceIdentifier: ServiceIdentifier<T>): BindingToSyntax<T> {
     const bindingToSyntax = super.bind(serviceIdentifier);
     this.eventEmitter.emit(BOUND, serviceIdentifier);
 
     return bindingToSyntax;
   }
 
-  public rebind<T>(serviceIdentifier: ServiceIdentifier<T>) {
+  public bindAsync<T>(
+    serviceIdentifier: ServiceIdentifier<T>,
+    callback: (bts: any) => void
+  ) {
+    return Promise.resolve()
+      .then(() => {
+        const bindingToSyntax = super.bind(serviceIdentifier);
+        callback(bindingToSyntax);
+      })
+      .then(() => {
+        this.eventEmitter.emit(BOUND, serviceIdentifier);
+      });
+  }
+
+  public rebind<T>(
+    serviceIdentifier: ServiceIdentifier<T>
+  ): BindingToSyntax<T> {
     const bindingToSyntax = super.rebind(serviceIdentifier);
     this.eventEmitter.emit(REBOUND, serviceIdentifier);
 

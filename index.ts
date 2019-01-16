@@ -1,7 +1,13 @@
 import {
   bindExtensionProvider,
-  ExtensionProvider
+  ExtensionProvider,
+  IExtensionProvider
 } from "./src/ExtensionProvider";
 import Container from "./src/Container";
 
-export { Container, ExtensionProvider, bindExtensionProvider };
+export {
+  Container,
+  ExtensionProvider,
+  IExtensionProvider,
+  bindExtensionProvider
+};

@@ -1,15 +1,20 @@
 import { injectable, interfaces } from "inversify";
-import { Observable, Subscription } from "rxjs";
+import { BehaviorSubject } from "rxjs";
+import { PartialObserver } from "rxjs/Observer"; //tslint:disable-line no-submodule-imports
 
-import Container, { observe } from "./Container";
-// tslint:disable-next-line:no-submodule-imports
-import { PartialObserver } from "rxjs/Observer";
+import Container from "./Container";
+
+export interface IExtensionProvider<T> {
+  subscribe(observer?: PartialObserver<T>): any;
+  getAllExtensions(): T[];
+  getTaggedExtensions(tagName: string, tagValue: any): T[];
+}
 
 @injectable()
-export class ExtensionProvider<T> {
-  private readonly serviceIdentifier: interfaces.ServiceIdentifier<T>;
-  private readonly container: Container;
-  private readonly updates$: Observable<T>;
+export class ExtensionProvider<T> implements IExtensionProvider<T> {
+  private serviceIdentifier: interfaces.ServiceIdentifier<T>;
+  private container: Container;
+  private services$: BehaviorSubject<any>;
 
   constructor(
     serviceIdentifier: interfaces.ServiceIdentifier<T>,
@@ -17,45 +22,49 @@ export class ExtensionProvider<T> {
   ) {
     this.serviceIdentifier = serviceIdentifier;
     this.container = container;
-    this.updates$ = observe<T>(container, serviceIdentifier)
-      .publish()
-      .refCount();
+    this.services$ = new BehaviorSubject<any>(null);
+
+    this.container.addEventListener<
+      T
+    >(Container.BOUND, (identifier: interfaces.ServiceIdentifier<T>) => {
+      if (identifier === this.serviceIdentifier) {
+        this.services$.next(":)");
+      }
+    });
   }
 
-  public subscribe(observer: PartialObserver<T>): Subscription {
-    return this.updates$.subscribe(observer);
+  public subscribe(observer?: PartialObserver<T>) {
+    this.services$.subscribe(observer);
   }
 
   public getAllExtensions(): T[] {
-    let extensions: T[] = [];
+    let services: T[] = [];
     if (this.container.isBound(this.serviceIdentifier)) {
       try {
-        extensions = this.container.getAll<T>(this.serviceIdentifier);
+        services = this.container.getAll<T>(this.serviceIdentifier);
       } catch (error) {
-        // tslint:disable-next-line:no-console
-        console.error(error);
+        // console.error(error);
       }
     }
 
-    return extensions;
+    return services;
   }
 
   public getTaggedExtensions(tagName: string, tagValue: any): T[] {
-    let extensions: T[] = [];
+    let services: T[] = [];
     if (this.container.isBound(this.serviceIdentifier)) {
       try {
-        extensions = this.container.getAllTagged<T>(
+        services = this.container.getAllTagged<T>(
           this.serviceIdentifier,
           tagName,
           tagValue
         );
       } catch (error) {
-        // tslint:disable-next-line:no-console
-        console.error(error);
+        // console.error(error);
       }
     }
 
-    return extensions;
+    return services;
   }
 }
 
