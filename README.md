@@ -1,4 +1,4 @@
-# Extension Kid 👶
+# Extension Kid 👶 [![Build Status](https://jenkins.mesosphere.com/service/jenkins/buildStatus/icon?job=frontend/extension-kid/master)](https://jenkins.mesosphere.com/service/jenkins/job/frontend/job/extension-kid/job/master/)
 
 👩‍🔬 Please be aware that this package is still experimental —
 changes to the interface and underlying implementation are likely,
