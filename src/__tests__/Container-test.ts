@@ -1,6 +1,20 @@
 import Container, { observe } from "../Container";
 
 describe("Container", () => {
+  describe("bindAsync", () => {
+    it("emits BOUND event with the service identifier", done => {
+      const container = new Container();
+      container.addEventListener(Container.BOUND, serviceIdentifier => {
+        expect(serviceIdentifier).toBe("Mock");
+        done();
+      });
+
+      container.bindAsync("Mock", bindingToSyntax => {
+        bindingToSyntax.toConstantValue(1);
+      });
+    });
+  });
+
   describe("bind", () => {
     it("emits BOUND event with the service identifier", done => {
       const container = new Container();
