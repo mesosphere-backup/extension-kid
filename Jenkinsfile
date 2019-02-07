@@ -36,24 +36,10 @@ pipeline {
       }
     }
 
-    stage('Unit Test') {
+    stage('Unit Tests') {
       steps {
         ansiColor('xterm') {
           sh '''npm run test -- --collectCoverage'''
-        }
-      }
-    }
-
-    stage('Build') {
-      steps {
-        ansiColor('xterm') {
-          sh '''npx tsc'''
-        }
-      }
-
-      post {
-        always {
-          archiveArtifacts 'dist/**/*'
         }
       }
     }
