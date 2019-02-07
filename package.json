@@ -1,6 +1,5 @@
 {
   "name": "extension-kid",
-  "module": "index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "0.2.3",
