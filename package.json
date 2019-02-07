@@ -2,7 +2,7 @@
   "name": "extension-kid",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "license": "Apache-2.0",
   "scripts": {
     "prepublish": "yarn run build",
