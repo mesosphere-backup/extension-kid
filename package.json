@@ -1,8 +1,8 @@
 {
   "name": "extension-kid",
   "module": "index.ts",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "version": "0.2.1",
   "license": "Apache-2.0",
   "scripts": {
@@ -10,6 +10,9 @@
     "test": "jest",
     "build": "tsc"
   },
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "inversify": "^5.0.0",
     "rxjs": "^6.3.0"
