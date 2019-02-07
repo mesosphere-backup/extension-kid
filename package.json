@@ -11,7 +11,9 @@
     "build": "tsc"
   },
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "index.ts"
   ],
   "peerDependencies": {
     "inversify": "^5.0.0",
