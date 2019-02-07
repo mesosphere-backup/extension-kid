@@ -1,8 +1,7 @@
 import { injectable, interfaces } from "inversify";
-import { BehaviorSubject } from "rxjs";
-import { PartialObserver } from "rxjs/Observer"; //tslint:disable-line no-submodule-imports
+import { Observable, PartialObserver } from "rxjs";
 
-import Container from "./Container";
+import Container, { observe } from "./Container";
 
 export interface IExtensionProvider<T> {
   subscribe(observer?: PartialObserver<T>): any;
@@ -14,7 +13,7 @@ export interface IExtensionProvider<T> {
 export class ExtensionProvider<T> implements IExtensionProvider<T> {
   private serviceIdentifier: interfaces.ServiceIdentifier<T>;
   private container: Container;
-  private services$: BehaviorSubject<any>;
+  private notifications$: Observable<any>;
 
   constructor(
     serviceIdentifier: interfaces.ServiceIdentifier<T>,
@@ -22,19 +21,11 @@ export class ExtensionProvider<T> implements IExtensionProvider<T> {
   ) {
     this.serviceIdentifier = serviceIdentifier;
     this.container = container;
-    this.services$ = new BehaviorSubject<any>(null);
-
-    this.container.addEventListener<
-      T
-    >(Container.BOUND, (identifier: interfaces.ServiceIdentifier<T>) => {
-      if (identifier === this.serviceIdentifier) {
-        this.services$.next(":)");
-      }
-    });
+    this.notifications$ = observe(this.container);
   }
 
   public subscribe(observer?: PartialObserver<T>) {
-    this.services$.subscribe(observer);
+    this.notifications$.subscribe(observer);
   }
 
   public getAllExtensions(): T[] {

@@ -20,33 +20,48 @@ describe("ExtensionProvider", () => {
   });
 
   describe("subscribe", () => {
-    it("notifies subscribers when something has been bound", done => {
-      const provider = container.getNamed(
-        ExtensionProvider,
-        TestServiceExtension
-      );
-      provider.subscribe({
-        next(serviceIdentifier) {
-          expect(serviceIdentifier).toBe(TestServiceExtension);
-          done();
-        }
+    describe("bind", () => {
+      afterAll(() => {
+        container.unbind(TestServiceExtension);
       });
-      container.bind(TestServiceExtension).toConstantValue(42);
+
+      it("notifies subscribers", done => {
+        const provider = container.getNamed(
+          ExtensionProvider,
+          TestServiceExtension
+        );
+        provider.subscribe({
+          next(serviceIdentifier) {
+            expect(serviceIdentifier).toBe(TestServiceExtension);
+            done();
+          }
+        });
+        container.bind(TestServiceExtension).toConstantValue(42);
+      });
     });
 
-    it("notifies subscribers when something has been unbound", done => {
-      const provider = container.getNamed(
-        ExtensionProvider,
-        TestServiceExtension
-      );
-      container.bind(TestServiceExtension).toConstantValue(42);
-      provider.subscribe({
-        next(serviceIdentifier) {
-          expect(serviceIdentifier).toBe(TestServiceExtension);
-          done();
-        }
+    describe("unbind", () => {
+      beforeAll(() => {
+        container.bind(TestServiceExtension).toConstantValue(42);
       });
-      container.unbind(TestServiceExtension);
+
+      // afterAll(() => {
+      //   container.unbind(TestServiceExtension);
+      // });
+
+      it("notifies subscribers", done => {
+        const provider = container.getNamed(
+          ExtensionProvider,
+          TestServiceExtension
+        );
+        provider.subscribe({
+          next(serviceIdentifier) {
+            expect(serviceIdentifier).toBe(TestServiceExtension);
+            done();
+          }
+        });
+        container.unbind(TestServiceExtension);
+      });
     });
   });
 
