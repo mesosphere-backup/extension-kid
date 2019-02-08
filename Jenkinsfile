@@ -30,7 +30,7 @@ pipeline {
       steps {
         ansiColor('xterm') {
           retry(2) {
-            sh '''npm ci'''
+            sh '''yarn'''
           }
         }
       }
@@ -39,7 +39,7 @@ pipeline {
     stage('Unit Tests') {
       steps {
         ansiColor('xterm') {
-          sh '''npm run test -- --collectCoverage'''
+          sh '''yarn run test -- --collectCoverage'''
         }
       }
     }
